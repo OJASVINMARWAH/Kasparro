@@ -11,7 +11,7 @@ Frontend Deployment:
 [https://kasparro-eight.vercel.app/](https://kasparro-eight.vercel.app/)
 ---
 # Published n8n workflow
-[https://jaigurupaa.app.n8n.cloud/webhook/aura-live-orchestrator]
+https://jaigurupaa.app.n8n.cloud/webhook/aura-live-orchestrator
 ---
 
 # Overview
