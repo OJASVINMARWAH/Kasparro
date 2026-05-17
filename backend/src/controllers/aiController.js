@@ -1,35 +1,29 @@
-const OpenAI =
-    require('openai');
+const OpenAI = require("openai");
 
-const openai =
-    new OpenAI({
+const {
+    triggerWorkflow,
+} = require("../services/n8nService");
 
-        apiKey:
-            process.env.OPENAI_API_KEY
-    });
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
-const analyzeTranscript =
-    async (req, res) => {
+const analyzeTranscript = async (
+    req,
+    res
+) => {
+    try {
+        const { transcript } = req.body;
 
-        try {
+        const completion =
+            await openai.chat.completions.create({
+                model: "gpt-4.1-mini",
 
-            const {
-                transcript
-            } = req.body;
+                messages: [
+                    {
+                        role: "system",
 
-            const completion =
-                await openai.chat.completions.create({
-
-                    model:
-                        'gpt-4.1-mini',
-
-                    messages: [
-
-                        {
-                            role: 'system',
-
-                            content: `
-
+                        content: `
 You are Aura,
 an empathetic multilingual
 AI customer support agent.
@@ -43,46 +37,64 @@ Mention:
 - claim understanding
 - likely issue
 - next workflow step
+`,
+                    },
 
-`
-                        },
+                    {
+                        role: "user",
+                        content: transcript,
+                    },
+                ],
 
-                        {
-                            role: 'user',
-
-                            content: transcript
-                        }
-                    ],
-
-                    temperature: 0.7
-                });
-
-            const reply =
-
-                completion.choices[0]
-                    .message.content;
-
-            res.status(200).json({
-
-                success: true,
-
-                reply
+                temperature: 0.7,
             });
 
-        } catch (error) {
+        const reply =
+            completion.choices[0]
+                .message.content;
 
-            console.error(error);
+        res.status(200).json({
+            success: true,
+            reply,
+        });
 
-            res.status(500).json({
+    } catch (error) {
+        console.error(error);
 
-                success: false,
+        res.status(500).json({
+            success: false,
+            message: "AI analysis failed",
+        });
+    }
+};
 
-                message:
-                    'AI analysis failed'
-            });
-        }
-    };
+const processAuraWorkflow = async (
+    req,
+    res
+) => {
+    try {
+        const workflowResponse =
+            await triggerWorkflow(req.body);
+
+        res.status(200).json({
+            success: true,
+            data: workflowResponse,
+        });
+
+    } catch (error) {
+        console.error(
+            "Aura workflow error:",
+            error.message
+        );
+
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
 
 module.exports = {
-    analyzeTranscript
+    analyzeTranscript,
+    processAuraWorkflow,
 };

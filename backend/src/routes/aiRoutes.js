@@ -1,19 +1,20 @@
-const express =
-    require('express');
+const express = require("express");
 
-const router =
-    express.Router();
+const router = express.Router();
 
 const {
-    analyzeTranscript
-} = require(
-    '../controllers/aiController'
+  analyzeTranscript,
+  processAuraWorkflow,
+} = require("../controllers/aiController");
+
+router.post(
+  "/analyze-transcript",
+  analyzeTranscript
 );
 
 router.post(
-    '/analyze-transcript',
-    analyzeTranscript
+  "/workflow",
+  processAuraWorkflow
 );
 
-module.exports =
-    router;
+module.exports = router;

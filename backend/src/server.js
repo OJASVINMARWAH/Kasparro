@@ -6,6 +6,11 @@ const cors = require("cors");
 
 const connectDB = require("./config/db");
 
+const app = express();
+app.use(cors({
+    origin: "https://kasparro-eight.vercel.app",
+    credentials: true
+}));
 // ROUTES
 const caseRoutes = require("./routes/caseRoutes");
 
@@ -15,7 +20,6 @@ const evidenceRoutes = require("./routes/evidenceRoutes");
 
 const visionRoutes = require('./routes/visionRoutes');
 
-const app = express();
 
 // DATABASE CONNECTION
 connectDB();
@@ -32,7 +36,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // API ROUTES
 app.use('/api/ai', aiRoutes);
-app.use('/api/vision', visionRoutes);   
+app.use('/api/vision', visionRoutes);
 
 app.use("/api/cases", caseRoutes);
 
@@ -44,8 +48,12 @@ app.get("/", (req, res) => {
 });
 
 // SERVER
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(
+        `Server running on port ${PORT}`
+    );
 });
+
+module.exports = app;
