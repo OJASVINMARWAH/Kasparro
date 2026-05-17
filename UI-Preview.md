@@ -11,7 +11,7 @@ AI-powered claims intelligence platform unifying customers, merchants, and suppo
 The central gateway introducing Aura’s AI-native claims resolution ecosystem.
 
 <p align="center">
-  <img src="Screenshot-Assets/landing-page.png" width="900"/>
+  <img src="./Screenshot-Assets/Screenshot%202026-05-18%20014536.png" width="900"/>
 </p>
 
 ---
@@ -21,7 +21,7 @@ The central gateway introducing Aura’s AI-native claims resolution ecosystem.
 Secure multi-role authentication system supporting agents, merchants, customers, and administrators.
 
 <p align="center">
-  <img src="Screenshot-Assets/login-portal.png" width="700"/>
+  <img src="./Screenshot-Assets/Screenshot%202026-05-18%20014549.png" width="700"/>
 </p>
 
 ---
@@ -31,7 +31,7 @@ Secure multi-role authentication system supporting agents, merchants, customers,
 Backend orchestration pipeline coordinating verification, escalation, evidence analysis, and resolution routing.
 
 <p align="center">
-  <img src="Screenshot-Assets/workflow-engine.png" width="1000"/>
+  <img src="./Screenshot-Assets/Screenshot%202026-05-17%20222224.png" width="1000"/>
 </p>
 
 ---
@@ -41,7 +41,7 @@ Backend orchestration pipeline coordinating verification, escalation, evidence a
 Real-time claim journey visualization with AI trust scoring and automated recommendation insights.
 
 <p align="center">
-  <img src="Screenshot-Assets/claim-tracking.png" width="950"/>
+  <img src="./Screenshot-Assets/Screenshot%202026-05-18%20015225.png" width="950"/>
 </p>
 
 ---
@@ -51,7 +51,7 @@ Real-time claim journey visualization with AI trust scoring and automated recomm
 AI-powered live video verification interface using computer vision for package inspection and damage validation.
 
 <p align="center">
-  <img src="Screenshot-Assets/vision-agent.png" width="950"/>
+  <img src="./Screenshot-Assets/Screenshot%202026-05-18%20015259.png" width="950"/>
 </p>
 
 ---
@@ -61,44 +61,5 @@ AI-powered live video verification interface using computer vision for package i
 Operational analytics dashboard providing claim trends, regional insights, trust scoring, and policy validation.
 
 <p align="center">
-  <img src="Screenshot-Assets/merchant-dashboard.png" width="950"/>
+  <img src="./Screenshot-Assets/Screenshot%202026-05-18%20015321.png" width="950"/>
 </p>
-
----
-
-# Core Capabilities
-
-- AI-powered claims automation
-- Live vision-based verification
-- Human-in-the-loop escalation routing
-- Real-time claim lifecycle tracking
-- Merchant operational intelligence
-- Trust scoring and policy validation
-- Multi-role secure workspace system
-- End-to-end orchestration workflows
-
----
-
-# Tech Stack
-
-## Frontend
-- React.js
-- TailwindCSS
-- Framer Motion
-
-## Backend
-- Node.js
-- Express.js
-- MongoDB
-
-## AI + Automation
-- Gemini API
-- n8n Multi-Agent Workflows
-- Computer Vision Pipelines
-- Intelligent Decision Routing
-
----
-
-# Vision
-
-Aura OS reimagines customer support and claims resolution as an intelligent, AI-native operational system — reducing friction, accelerating verification, and improving trust between customers, merchants, and support teams.
