@@ -344,6 +344,16 @@ Built by:
 
 * Ojasvin Marwah
 
+  * 3rd Year Computer Science Engineering Student
+  * Thapar Institute of Engineering & Technology, Patiala
+  * Email: [omarwah_be23@thapar.edu](mailto:omarwah_be23@thapar.edu)
+
+* Hurreet Kaur
+
+  * 3rd Year Computer Science Engineering Student
+  * Thapar Institute of Engineering & Technology, Patiala
+  * Email: [hkaur6_be23@thapar.edu](mailto:hkaur6_be23@thapar.edu)
+
 ---
 
 # License
