@@ -1,0 +1,205 @@
+.tracking-page-wrapper {
+    background-color: #FDF8F3;
+    color: #3E2723;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    font-family: 'Manrope', sans-serif;
+    padding: 6rem 2rem;
+}
+
+.tracking-page-wrapper .grid-layer {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: radial-gradient(rgba(141, 110, 99, 0.25) 1.5px, transparent 1.5px);
+    background-size: 28px 28px; z-index: 0; pointer-events: none;
+}
+
+.tracking-page-wrapper .bg-shape {
+    position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.25; z-index: 0;
+    animation: floatShape 25s ease-in-out infinite alternate; pointer-events: none;
+}
+.tracking-page-wrapper .shape-1 { width: 600px; height: 600px; background: #E65100; top: -20%; left: -10%; }
+.tracking-page-wrapper .shape-2 { width: 500px; height: 500px; background: #FFB300; bottom: -15%; right: 5%; animation-delay: -5s; }
+
+.tracking-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.tracking-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.tracking-header h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #3E2723;
+    letter-spacing: -2px;
+    margin-bottom: 1rem;
+    text-shadow: 0 10px 20px rgba(62, 39, 35, 0.1);
+}
+
+.tracking-header p {
+    font-size: 1.1rem;
+    color: #8D6E63;
+    font-weight: 500;
+}
+
+.tracking-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+.tracking-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 30px 60px rgba(62, 39, 35, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+.tracking-card.dark-card {
+    background: linear-gradient(135deg, #3E2723 0%, #2a1a17 100%);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tracking-card.dark-card .tracking-meta-title {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.tracking-card.dark-card .tracking-value {
+    color: #fff;
+}
+
+.tracking-meta-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #8D6E63;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.tracking-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #3E2723;
+    margin-bottom: 2rem;
+}
+
+.tracking-value.large {
+    font-size: 2.5rem;
+    letter-spacing: -1px;
+}
+
+/* Trust Track */
+.tracking-trust-track {
+    background: rgba(62, 39, 35, 0.1);
+    height: 8px;
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.tracking-trust-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #E65100, #FFB300);
+    border-radius: 100px;
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Timeline */
+.tracking-timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin-top: 1rem;
+}
+
+.tracking-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(62, 39, 35, 0.1);
+}
+
+.tracking-timeline-item {
+    position: relative;
+    margin-bottom: 2.5rem;
+}
+
+.tracking-timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.tracking-dot {
+    position: absolute;
+    left: -2.4rem;
+    top: 0.2rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid rgba(62, 39, 35, 0.2);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+.tracking-dot.active {
+    background: #E65100;
+    border-color: #E65100;
+    box-shadow: 0 0 0 4px rgba(230, 81, 0, 0.2);
+}
+
+.tracking-time {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #E65100;
+    margin-bottom: 0.2rem;
+}
+
+.tracking-event {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #3E2723;
+    margin-bottom: 0.2rem;
+}
+
+.tracking-actor {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #8D6E63;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(230, 81, 0, 0.1);
+    color: #E65100;
+    border: 1px solid rgba(230, 81, 0, 0.2);
+}
+
+@media (max-width: 1024px) {
+    .tracking-grid {
+        grid-template-columns: 1fr;
+    }
+}

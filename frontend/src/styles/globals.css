@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap');
+
+:root {
+    /* Saturated Warm & Sandy Palette */
+    --bg-warm: #FDF8F3;
+    --accent-primary: #E65100;
+    --accent-secondary: #FFB300;
+    --dark-slate: #3E2723;
+    --sidebar-bg: rgba(62, 39, 35, 0.98);
+    --text-dark: #3E2723;
+    --text-muted: #8D6E63;
+    --text-light-muted: #D7CCC8;
+    --border-light: rgba(255, 255, 255, 0.9);
+    --border-dark: rgba(255, 255, 255, 0.15);
+    
+    /* Noir Palette Additions */
+    --noir-bg: #0A0A0A;
+    --noir-panel: #141414;
+    --noir-border: rgba(255, 255, 255, 0.08);
+    --noir-text: #FFFFFF;
+    --noir-text-muted: #888888;
+    --noir-accent: #EFE4D0;
+
+    /* Shadows */
+    --shadow-float: 0 30px 60px rgba(62, 39, 35, 0.15);
+    --shadow-panel: -20px 20px 60px rgba(62, 39, 35, 0.35);
+    --shadow-card: 0 15px 35px rgba(62, 39, 35, 0.06);
+    --shadow-inner: inset 0 0 0 1px rgba(255,255,255,0.7);
+    --shadow-glow: 0 0 40px rgba(230, 81, 0, 0.2);
+    
+    /* Sizing & Animation */
+    --radius-lg: 32px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Manrope', sans-serif; }
+
+body {
+    background-color: var(--bg-warm);
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    /* Added padding for Noir Navbar */
+    padding-top: 70px;
+}
+
+/* --- Dotted Grid Background Layer --- */
+.grid-layer {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: radial-gradient(rgba(141, 110, 99, 0.25) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+    z-index: -2;
+    pointer-events: none;
+}
+
+/* --- Global Background Elements --- */
+.bg-shape {
+    position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.25; z-index: -1;
+    animation: floatShape 25s ease-in-out infinite alternate; pointer-events: none;
+}
+.shape-1 { width: 600px; height: 600px; background: var(--accent-primary); top: -20%; left: -10%; }
+.shape-2 { width: 500px; height: 500px; background: var(--accent-secondary); bottom: -15%; right: 5%; animation-delay: -5s; }
+
+/* --- Continuous Shiny Sheen Animation --- */
+.sheen-layer {
+    position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15) 50%, transparent);
+    animation: sheenSweep 6s infinite ease-in-out; pointer-events: none;
+    z-index: 1;
+}
+
+/* --- Typewriter Animation --- */
+.typewriter-text {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 4px solid var(--accent-primary);
+    animation: typing 1.5s steps(30, end) forwards, blink-caret 0.8s step-end infinite;
+    max-width: 0;
+    padding-right: 8px;
+}
+
+.typewriter-text.active {
+    animation: typing 1.2s steps(30, end) forwards, blink-caret 0.8s step-end infinite;
+    animation-delay: 0.3s;
+}
+
+/* Buttons */
+.btn-creative {
+    opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; animation-delay: 1.4s;
+    position: relative; background: var(--dark-slate); color: #fff; padding: 1.25rem 3.5rem;
+    border-radius: 100px; font-weight: 800; font-size: 1.1rem; cursor: pointer; border: none;
+    transition: var(--transition); box-shadow: 0 20px 40px rgba(62, 39, 35, 0.3); overflow: hidden;
+}
+.btn-creative::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: all 0.6s ease;
+}
+.btn-creative:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 30px 60px rgba(230, 81, 0, 0.4); background: var(--accent-primary); }
+.btn-creative:hover::before { left: 100%; }
+
+/* Animations */
+@keyframes typing { from { max-width: 0; } to { max-width: 100%; } }
+@keyframes blink-caret { from, to { border-color: transparent; } 50% { border-color: var(--accent-primary); } }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes floatIn { to { opacity: 1; transform: rotate(var(--rot, 0deg)) translateX(var(--tx, 0)) translateY(var(--ty, 0)); } }
+@keyframes floatInRing { to { opacity: 1; transform: rotateX(60deg) translateY(100px); } }
+@keyframes continuousFloat { from { transform: rotate(-8deg) translateX(-400px) translateY(100px); } to { transform: rotate(-6deg) translateX(-400px) translateY(80px); } }
+@keyframes continuousFloat2 { from { transform: rotate(5deg) translateX(380px) translateY(50px); } to { transform: rotate(8deg) translateX(380px) translateY(70px); } }
+@keyframes sheenSweep { 0% { left: -100%; } 50% { left: 100%; } 100% { left: 100%; } }
+@keyframes floatShape { 0% { transform: translate(0,0) rotate(0deg); } 100% { transform: translate(40px,-40px) rotate(15deg); } }
+@keyframes pulseDot { 0% { box-shadow: 0 0 0 0 rgba(230, 81, 0, 0.4); } 70% { box-shadow: 0 0 0 12px rgba(230, 81, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(230, 81, 0, 0); } }
+.curator-footer {
+    text-align: center;
+    padding: 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-top: 4rem;
+    border-top: 1px solid rgba(62, 39, 35, 0.1);
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.5), transparent);
+    width: 100%;
+    position: relative;
+    z-index: 10;
+}

@@ -1,0 +1,143 @@
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  position: relative;
+  min-height: calc(100vh - 70px); /* minus navbar height */
+  overflow: hidden;
+}
+
+.elegant-badge {
+  opacity: 0; 
+  transform: translateY(20px); 
+  animation: fadeUp 0.8s forwards; 
+  animation-delay: 0.1s;
+  border: 1px solid rgba(230,81,0,0.3); 
+  color: var(--accent-primary); 
+  background: rgba(255,255,255,0.7);
+  padding: 0.5rem 1.5rem; 
+  border-radius: 100px; 
+  font-weight: 800; 
+  font-size: 0.75rem; 
+  letter-spacing: 2.5px; 
+  text-transform: uppercase; 
+  margin-bottom: 2rem; 
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 20px rgba(230, 81, 0, 0.1);
+}
+
+.landing-text-center { 
+  text-align: center; 
+  z-index: 2; 
+  position: relative; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  max-width: 900px; 
+}
+
+.landing-text-center h1 { 
+  font-size: 7.5rem; 
+  font-weight: 800; 
+  line-height: 1.1; 
+  margin-bottom: 1.5rem; 
+  letter-spacing: -4px; 
+  color: var(--text-dark); 
+  text-shadow: 0 20px 40px rgba(62, 39, 35, 0.1);
+}
+
+.landing-text-center p { 
+  opacity: 0; 
+  transform: translateY(20px); 
+  animation: fadeUp 0.8s forwards; 
+  animation-delay: 1.2s;
+  font-size: 1.35rem; 
+  color: var(--text-muted); 
+  font-weight: 500; 
+  margin-bottom: 3.5rem; 
+  max-width: 560px; 
+  line-height: 1.6; 
+  letter-spacing: -0.2px;
+  background: rgba(255,255,255,0.6); 
+  padding: 1rem 2rem; 
+  border-radius: 20px; 
+  backdrop-filter: blur(10px);
+}
+
+/* Abstract Floating Glass Centerpiece */
+.hero-showcase {
+  position: absolute; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -45%);
+  width: 100vw; 
+  height: 100vh; 
+  pointer-events: none; 
+  z-index: 1;
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  perspective: 1000px;
+}
+
+.glass-element {
+  position: absolute; 
+  background: rgba(255, 255, 255, 0.4); 
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.8); 
+  border-radius: var(--radius-lg);
+  box-shadow: 0 40px 80px rgba(62, 39, 35, 0.1), inset 0 0 0 1px rgba(255,255,255,0.9);
+  opacity: 0; 
+  animation: floatIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.glass-card-1 { 
+  width: 340px; 
+  height: 420px; 
+  --rot: -8deg; 
+  --tx: -400px; 
+  --ty: 100px; 
+  animation: floatIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards, continuousFloat 8s ease-in-out infinite alternate 1.5s; 
+}
+.glass-card-2 { 
+  width: 380px; 
+  height: 320px; 
+  background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,243,224,0.3)); 
+  --rot: 5deg; 
+  --tx: 380px; 
+  --ty: 50px; 
+  animation: floatIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards, continuousFloat2 10s ease-in-out infinite alternate 1.5s; 
+}
+.glass-ring { 
+  width: 600px; 
+  height: 600px; 
+  border-radius: 50%; 
+  border: 2px solid rgba(230,81,0,0.15); 
+  background: transparent; 
+  box-shadow: none; 
+  backdrop-filter: none; 
+  animation: floatInRing 2s forwards; 
+  animation-delay: 0.2s;
+}
+
+/* Subtle glowing accents inside the glass */
+.glass-accent { 
+  position: absolute; 
+  top: 2rem; 
+  left: 2rem; 
+  width: 40px; 
+  height: 40px; 
+  border-radius: 50%; 
+  background: var(--accent-primary); 
+  filter: blur(20px); 
+  opacity: 0.5; 
+}
+.glass-line { 
+  position: absolute; 
+  left: 2rem; 
+  height: 8px; 
+  border-radius: 4px; 
+  background: rgba(255,255,255,0.8); 
+}
