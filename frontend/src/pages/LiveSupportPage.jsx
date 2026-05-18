@@ -223,7 +223,7 @@ const LiveSupportPage = ({ onClose }) => {
           complaintCount: 1,
           customerTier: 'NORMAL',
           riskScore: 20,
-          phone: 'whatsapp:+91YOURNUMBER',
+          phone: 'whatsapp:+919149293695',
           event: 'CLAIM_SUBMITTED'
         }
       );
@@ -245,7 +245,7 @@ const LiveSupportPage = ({ onClose }) => {
 
           speakResponse(
 
-            "Hello. I am Aura, your AI support agent. I have successfully received your complaint and initiated a secure verification workflow. Please stay connected while I analyze the provided information."
+            "Namaste, Maine aapki complaint register kar li hai"
 
           );
 

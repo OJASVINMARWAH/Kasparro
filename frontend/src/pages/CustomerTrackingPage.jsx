@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/customerTracking.css';
+import LiveSupportPage from './LiveSupportPage';
 
 const CustomerTrackingPage = ({ selectedCase }) => {
     const navigate = useNavigate();
-
+    const [showLiveSupport, setShowLiveSupport] = useState(false);
     // If no case is found in state, fall back or redirect
     if (!selectedCase) {
         return (
@@ -24,14 +25,14 @@ const CustomerTrackingPage = ({ selectedCase }) => {
             <div className="bg-shape shape-2"></div>
 
             <div className="tracking-container">
-                
+
                 <div className="tracking-header">
                     <h1>Claim Tracking Portal</h1>
                     <p>Track the live status of your submission processed by Aura OS.</p>
                 </div>
 
                 <div className="tracking-grid">
-                    
+
                     {/* LEFT COLUMN */}
                     <div className="tracking-card">
                         <div className="tracking-meta-title">ORDER ID</div>
@@ -47,8 +48,8 @@ const CustomerTrackingPage = ({ selectedCase }) => {
                             {Math.round((selectedCase.confidenceScore || 0) * 100)}%
                         </div>
                         <div className="tracking-trust-track">
-                            <div 
-                                className="tracking-trust-fill" 
+                            <div
+                                className="tracking-trust-fill"
                                 style={{ width: `${Math.round((selectedCase.confidenceScore || 0) * 100)}%` }}
                             ></div>
                         </div>
@@ -57,7 +58,7 @@ const CustomerTrackingPage = ({ selectedCase }) => {
                     {/* CENTER COLUMN */}
                     <div className="tracking-card" style={{ padding: '3.5rem', background: 'rgba(255,255,255,0.85)' }}>
                         <div className="tracking-meta-title" style={{ marginBottom: '2rem', textAlign: 'center', fontSize: '1rem' }}>LIVE JOURNEY</div>
-                        
+
                         <div className="tracking-timeline">
                             {selectedCase.eventStream && selectedCase.eventStream.length > 0 ? (
                                 selectedCase.eventStream.map((event, index) => (
@@ -95,10 +96,32 @@ const CustomerTrackingPage = ({ selectedCase }) => {
                                 {selectedCase.agentResults.recommendation.reasoning}
                             </p>
                         )}
+                        <button
+                            onClick={() => setShowLiveSupport(true)}
+                            style={{
+                                marginTop: '2rem',
+                                width: '100%',
+                                padding: '1rem',
+                                borderRadius: '16px',
+                                border: 'none',
+                                background: '#E65100',
+                                color: '#fff',
+                                fontWeight: 800,
+                                cursor: 'pointer',
+                                fontSize: '1rem'
+                            }}
+                        >
+                            TALK TO AI AGENT
+                        </button>
                     </div>
 
                 </div>
             </div>
+            {showLiveSupport && (
+                <LiveSupportPage
+                    onClose={() => setShowLiveSupport(false)}
+                />
+            )}
         </div>
     );
 };

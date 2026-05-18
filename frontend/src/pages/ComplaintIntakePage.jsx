@@ -5,7 +5,7 @@ import '../styles/intake.css';
 
 const ComplaintIntakePage = ({ onComplaintSuccess }) => {
     const navigate = useNavigate();
-    
+
     const [formData, setFormData] = useState({
         customerName: '',
         customerEmail: '',
@@ -68,7 +68,7 @@ const ComplaintIntakePage = ({ onComplaintSuccess }) => {
 
         try {
             const formDataObj = new FormData();
-            
+
             // Append form data
             Object.keys(formData).forEach(key => {
                 formDataObj.append(key, formData[key]);
@@ -81,12 +81,12 @@ const ComplaintIntakePage = ({ onComplaintSuccess }) => {
 
             // If using axios via api.js, ensure headers for multipart are handled properly
             // Usually axios sets this automatically when data is FormData
-            const response = await API.post('/cases', formDataObj, {
+            const response = await API.post('/api/cases', formDataObj, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            
+
             // Navigate to tracking portal with the new case data
             if (onComplaintSuccess && response.data && response.data.data) {
                 onComplaintSuccess(response.data.data);
@@ -112,12 +112,12 @@ const ComplaintIntakePage = ({ onComplaintSuccess }) => {
 
             <div id="complaint-page" className="intake-page active">
                 <div className="complaint-container">
-                    
+
                     <div className="complaint-text">
                         <div className="elegant-badge">Aura Resolution Center</div>
-                        <h1 className="typewriter-text active">Register a<br/>Claim.</h1>
+                        <h1 className="typewriter-text active">Register a<br />Claim.</h1>
                         <p>Experiencing an issue? Submit your details below. Our predictive AI engine and dedicated agents will process your request instantly.</p>
-                        
+
                         <div style={{ opacity: 0, animation: 'fadeUp 0.8s forwards', animationDelay: '1.5s', display: 'flex', gap: '1.5rem', marginTop: '2rem' }}>
                             <div>
                                 <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#E65100' }}>24h</div>
@@ -133,9 +133,9 @@ const ComplaintIntakePage = ({ onComplaintSuccess }) => {
                     <div className="form-card">
                         <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.5rem', letterSpacing: '-1px', color: '#3E2723' }}>Claim Details</h2>
                         <p style={{ color: '#8D6E63', fontWeight: 600, fontSize: '0.9rem', marginBottom: '2.5rem' }}>Please provide accurate information to expedite processing.</p>
-                        
+
                         <form onSubmit={handleSubmit}>
-                            
+
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div className="intake-input-group">
                                     <label>FULL NAME</label>
@@ -170,7 +170,7 @@ const ComplaintIntakePage = ({ onComplaintSuccess }) => {
 
                             <div className="intake-input-group">
                                 <label>EVIDENCE UPLOAD</label>
-                                <label 
+                                <label
                                     className={`upload-zone ${dragActive ? 'dragover' : ''}`}
                                     onDragEnter={handleDrag}
                                     onDragLeave={handleDrag}
@@ -190,15 +190,15 @@ const ComplaintIntakePage = ({ onComplaintSuccess }) => {
                             <button type="submit" className="intake-btn-creative" disabled={isSubmitting}>
                                 {isSubmitting ? 'Processing...' : 'Submit Registration'}
                             </button>
-                            
+
                             <div style={{ textAlign: 'center', marginTop: '1.5rem', position: 'relative', zIndex: 10 }}>
-                                <Link to="/dashboard" style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8D6E63', textTransform: 'uppercase', letterSpacing: '1px', textDecoration: 'none', transition: 'all 0.4s ease', display: 'inline-block', padding: '0.5rem' }} onMouseOver={(e) => e.target.style.color='#3E2723'} onMouseOut={(e) => e.target.style.color='#8D6E63'}>
+                                <Link to="/dashboard" style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8D6E63', textTransform: 'uppercase', letterSpacing: '1px', textDecoration: 'none', transition: 'all 0.4s ease', display: 'inline-block', padding: '0.5rem' }} onMouseOver={(e) => e.target.style.color = '#3E2723'} onMouseOut={(e) => e.target.style.color = '#8D6E63'}>
                                     Return to Dashboard
                                 </Link>
                             </div>
                         </form>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
