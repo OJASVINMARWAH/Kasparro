@@ -64,7 +64,8 @@ const createCase = async (req, res) => {
 
         customerRiskLevel:
           orchestrationResult
-            ?.agentResults
+            ?.
+            ults
             ?.intake
             ?.fraudRisk || "LOW",
 
@@ -216,110 +217,90 @@ const getCaseById = async (req, res) => {
   }
 };
 
-const updateCaseStatus = async (req, res) => {
+const updateCaseStatus =
+  async (req, res) => {
 
-  try {
+    try {
 
-    console.log(
-      "N8N STATUS UPDATE:",
-      req.params.id
-    );
+      const {
 
-    console.log(
-      req.body
-    );
+        workflowStatus,
 
-    const updatedCase =
-      await Case.findOneAndUpdate(
+        actor,
 
-        {
-          ticketId:
-            req.params.id
-        },
+        eventMessage
 
-        {
-          status:
-            req.body.workflowStatus,
+      } = req.body;
 
-          latestEvent:
-            req.body.eventType,
+      // FIND CASE USING orderId
 
-          eventMessage:
-            req.body.eventMessage
-        },
-
-        {
-          new: true
-        }
-      );
-
-    if (!updatedCase) {
-
-      console.log(
-        "NEW ORCHESTRATION LOGIC RUNNING"
-      );
-
-      const newCase =
-        await Case.create({
-
-          ticketId:
-            req.params.id,
-
-          customerName:
-            "AI Orchestrated User",
+      const caseItem =
+        await Case.findOne({
 
           orderId:
-            "ORD-" + Date.now(),
-
-          issue:
-            req.body.eventMessage ||
-            "AI workflow initiated",
-
-          status:
-            req.body.workflowStatus,
-
-          latestEvent:
-            req.body.eventType,
-
-          eventMessage:
-            req.body.eventMessage
+            req.params.id
         });
 
-      return res.json({
+      if (!caseItem) {
+
+        return res.status(404).json({
+
+          success: false,
+
+          message:
+            'Case not found'
+        });
+      }
+
+      // UPDATE STATUS
+
+      caseItem.workflowStatus =
+        workflowStatus;
+
+      // ADD JOURNEY EVENT
+
+      caseItem.journey =
+        caseItem.journey || [];
+
+      caseItem.journey.push({
+
+        actor:
+          actor || 'SYSTEM',
+
+        message:
+          eventMessage ||
+
+          'Case updated',
+
+        timestamp:
+          new Date()
+      });
+
+      await caseItem.save();
+
+      res.json({
 
         success: true,
 
-        message:
-          "New case created by orchestration",
-
         updatedCase:
-          newCase
+          caseItem
+      });
+
+    } catch (error) {
+
+      console.error(
+        error
+      );
+
+      res.status(500).json({
+
+        success: false,
+
+        message:
+          error.message
       });
     }
-
-    res.json({
-
-      success: true,
-
-      message:
-        "Case updated successfully",
-
-      updatedCase
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-    res.status(500).json({
-
-      success: false,
-
-      error:
-        error.message
-    });
-  }
-};
+  };
 
 module.exports = {
 

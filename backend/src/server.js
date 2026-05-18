@@ -7,10 +7,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 
 const app = express();
-app.use(cors({
-    origin: "https://kasparro-eight.vercel.app",
-    credentials: true
-}));
+app.use(cors());
 // ROUTES
 const caseRoutes = require("./routes/caseRoutes");
 
@@ -51,9 +48,9 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Server running on ${PORT}`);
-  });
+    app.listen(PORT, () => {
+        console.log(`Server running on ${PORT}`);
+    });
 }
 
 module.exports = app;
