@@ -26,7 +26,7 @@ Secure multi-role authentication system supporting agents, merchants, customers,
 
 ---
 
-## Multi-Agent Orchestration Workflow
+## Agent Orchestration Workflow
 
 Backend orchestration pipeline coordinating verification, escalation, evidence analysis, and resolution routing.
 
