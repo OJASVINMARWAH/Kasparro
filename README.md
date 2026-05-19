@@ -392,12 +392,12 @@ http://localhost:5173
 # Contributors
 
 ## Ojasvin Marwah
-- Computer Science Engineering
-- TIET Patiala
+- III Year Computer Science Engineering, TIET Patiala
+- contact : omarwah_be23@thapar.edu
 
 ## Hurreet Kaur
-- Computer Science Engineering
-- TIET Patiala
+-  III Year Computer Science Engineering, TIET Patiala
+-  contact : hkaur6_be23@thapar.edu
 
 ---
 
