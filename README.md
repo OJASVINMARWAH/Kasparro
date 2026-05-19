@@ -1,12 +1,12 @@
 # Kasparro Aura
 
-An AI-powered customer support orchestration platform designed to streamline merchant issue resolution through intelligent workflows, multilingual assistance, workflow automation, operational intelligence, voice interaction, and AI-assisted evidence verification.
+An AI-powered customer support orchestration platform designed to streamline merchant issue resolution through intelligent workflows, AI automation, voice interaction, vision-assisted verification, and operational orchestration.
 
 ---
 
 # Live Demo
 
-## Frontend Deployment
+Frontend Deployment:
 
 https://kasparro-eight.vercel.app/
 
@@ -18,172 +18,41 @@ https://jaigurupaa.app.n8n.cloud/webhook/aura-live-orchestrator
 
 ---
 
-# Overview
-
-Kasparro Aura is designed as a modern AI-driven support ecosystem that combines:
-
-- Conversational AI
-- Workflow orchestration
-- Operational routing
-- Multilingual customer support
-- Evidence handling
-- Escalation management
-- Vision-assisted workflows
-- Voice interaction placeholders
-- WhatsApp notification pipelines
-- Real-time operational synchronization
-
-The platform integrates:
-
-- React + Vite frontend
-- Express backend APIs
-- MongoDB database
-- n8n workflow orchestration
-- OpenAI-powered AI assistance
-- YOLO-based vision detection
-- Twilio notification support
-
----
-
 # Core Features
 
-## AI Customer Support
-
-Aura acts as a multilingual AI support assistant capable of:
-
-- Understanding customer complaints
-- Providing empathetic responses
-- Guiding users through workflows
-- Generating operational insights
-- Performing intelligent orchestration
-
----
-
-## Workflow Orchestration with n8n
-
-The system uses n8n to coordinate intelligent operational flows including:
-
-- Governance pipelines
-- Decision routing
-- Escalation handling
-- Resolution management
-- Evidence workflows
-- Notification systems
-- Backend synchronization
-
----
-
-## Merchant & Case Intelligence
-
-Aura supports:
-
-- Case creation
-- Complaint tracking
-- Evidence management
-- Workflow escalation
-- Operational synchronization
-- Real-time journey updates
-
----
-
-## Voice Interaction Placeholder
-
-The frontend currently includes browser-based speech synthesis to simulate conversational voice support.
-
-This architecture is extensible toward:
-
-- Real-time voice agents
-- ElevenLabs integration
-- Streaming AI conversations
-- OpenAI speech systems
-
----
-
-## Vision Pipeline Support
-
-The backend architecture includes computer vision workflow preparation using:
-
-- YOLO-based detection pipeline
-- Python vision utilities
-- Evidence-oriented processing
-- Damage detection simulation
-
----
-
-# System Architecture
-
-```text
-Frontend (React + Vite)
-        ↓
-Express Backend APIs
-        ↓
-n8n Workflow Orchestration
-        ↓
-AI / Governance / Routing Engines
-        ↓
-MongoDB + Notifications + Voice Layer
-```
-
----
-
-# User Flow
-
-## Customer Interaction Flow
-
-```text
-User submits complaint
-        ↓
-Frontend sends request to backend
-        ↓
-Backend triggers n8n orchestration workflow
-        ↓
-Workflow routes issue intelligently
-        ↓
-AI processes operational context
-        ↓
-Notifications and workflow actions execute
-        ↓
-Customer receives response
-```
+- AI-powered customer complaint orchestration
+- Voice-assisted support interaction
+- YOLO-based damage verification pipeline
+- Real-time operational workflow routing
+- Automated escalation and governance handling
+- WhatsApp customer notifications via Twilio
+- Live claim journey tracking dashboard
+- n8n-based workflow automation
+- MongoDB-backed case management system
+- AI-assisted evidence verification architecture
 
 ---
 
 # Tech Stack
 
 ## Frontend
-
 - React
 - Vite
 - Axios
 - CSS
 
----
-
 ## Backend
-
 - Node.js
 - Express.js
 - MongoDB
 - Mongoose
-- OpenAI SDK
-- Axios
 
----
-
-## Workflow & Automation
-
-- n8n Cloud
-- Webhook orchestration
-- Operational routing
-
----
-
-## AI & Intelligence
-
-- OpenAI GPT models
-- Conversational AI workflows
-- AI orchestration architecture
-- YOLO Vision Detection
+## AI & Automation
+- OpenAI
+- n8n
+- YOLOv8
+- Twilio
+- Browser Speech APIs
 
 ---
 
@@ -191,32 +60,16 @@ Customer receives response
 
 ```text
 frontend/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── pages/
-│   ├── services/
-│   └── styles/
-│
 backend/
-├── src/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   └── services/
-│       ├── agents/
-│       └── orchestration/
-│
 n8n-workflow/
+README.md
 ```
 
 ---
 
 # Prerequisites
 
-Install the following before running locally:
+Install before setup:
 
 - Node.js (v18+ recommended)
 - MongoDB Community Server
@@ -227,20 +80,22 @@ Install the following before running locally:
 
 ---
 
-# Local Installation
+# Local Installation & Setup
 
-## 1. Clone Repository
+---
+
+# 1. Clone Repository
 
 ```bash
 git clone https://github.com/OJASVINMARWAH/Kasparro.git
-cd Kasparro
+cd Kasparro/aura
 ```
 
 ---
 
-# Frontend Setup
+# 2. Frontend Setup
 
-## Install Frontend Dependencies
+## Install Dependencies
 
 ```bash
 cd frontend
@@ -249,7 +104,7 @@ npm install
 
 ---
 
-## Frontend `.env`
+## Create Frontend `.env`
 
 Create:
 
@@ -280,18 +135,18 @@ http://localhost:5173
 
 ---
 
-# Backend Setup
+# 3. Backend Setup
 
-## Install Backend Dependencies
+Open new terminal:
 
 ```bash
-cd ../backend
+cd backend
 npm install
 ```
 
 ---
 
-## Backend `.env`
+## Create Backend `.env`
 
 Create:
 
@@ -333,7 +188,7 @@ http://localhost:5000
 
 ---
 
-# YOLO Vision Detection Setup
+# 4. YOLO Vision Detection Setup
 
 ## Install Python Dependencies
 
@@ -375,7 +230,7 @@ depending on your project filename.
 
 ---
 
-# n8n Setup
+# 5. n8n Setup
 
 ## Install n8n
 
@@ -399,7 +254,7 @@ http://localhost:5678
 
 ---
 
-# Import Workflow
+# 6. Import Workflow
 
 1. Open:
 ```text
@@ -422,7 +277,7 @@ aura-workflow.json
 
 ---
 
-# MongoDB
+# 7. MongoDB
 
 Ensure MongoDB service is running locally.
 
@@ -504,14 +359,6 @@ POST /api/ai/workflow
 
 ---
 
-## Transcript Analysis
-
-```http
-POST /api/ai/analyze-transcript
-```
-
----
-
 ## Vision Detection
 
 ```http
@@ -520,84 +367,37 @@ POST /api/vision/detect
 
 ---
 
-# Deployment
+# Demo Flow
 
-## Frontend Deployment
+1. Open:
+```text
+http://localhost:5173
+```
 
-Frontend is deployed using:
+2. Start voice session
 
-- Vercel
+3. Speak customer complaint
 
----
+4. AI workflow orchestrates:
+- intake analysis
+- governance routing
+- verification workflow
+- backend synchronization
+- WhatsApp notification
 
-## Backend Deployment
-
-Backend deployment architecture supports:
-
-- Vercel serverless functions
-- Local Node.js deployment
-
----
-
-## Workflow Deployment
-
-Workflow orchestration is deployed using:
-
-- n8n Cloud
-
----
-
-# Features Demonstrated
-
-- Voice complaint intake
-- AI workflow orchestration
-- Live object verification
-- Automated case routing
-- WhatsApp notifications
-- Real-time claim journey tracking
-- Human escalation pipeline
-- AI operational intelligence
-
----
-
-# Future Roadmap
-
-- Real-time AI voice agents
-- Advanced vision intelligence
-- Autonomous escalation systems
-- Live operational dashboards
-- Streaming conversational workflows
-- Merchant analytics layer
-- Multi-agent orchestration
-- Enterprise support tooling
-
----
-
-# Development Philosophy
-
-Kasparro Aura focuses on building:
-
-- Human-centric AI systems
-- Operational intelligence layers
-- Workflow-first automation
-- Scalable support ecosystems
-- AI-assisted merchant experiences
+5. Dashboard updates in real-time.
 
 ---
 
 # Contributors
 
-Built by:
-
 ## Ojasvin Marwah
-
-- 3rd Year Computer Science Engineering Student
-- Thapar Institute of Engineering & Technology, Patiala
+- Computer Science Engineering
+- TIET Patiala
 
 ## Hurreet Kaur
-
-- 3rd Year Computer Science Engineering Student
-- Thapar Institute of Engineering & Technology, Patiala
+- Computer Science Engineering
+- TIET Patiala
 
 ---
 
