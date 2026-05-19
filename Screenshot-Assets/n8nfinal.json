@@ -1,0 +1,593 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aura-live-orchestrator",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "5df5e5d1-606c-419d-bb24-e370e2c4d589",
+      "name": "Aura Live Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1232,
+        576
+      ],
+      "webhookId": "9b5b195c-e3a2-4e24-9fb0-06b41f06565a"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.ticketId}}",
+              "operation": "notEmpty"
+            },
+            {
+              "value1": "={{$json.event}}",
+              "operation": "notEmpty"
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "e01c100a-5255-443c-8bb3-a55e1ef8770c",
+      "name": "Enterprise Guardrail",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1008,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5000/api/cases",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"orderId\": $json.orderId,\n  \"customerName\": \"Aura AI User\",\n  \"issue\": $json.transcript,\n  \"workflowStatus\": \"RECEIVED\",\n  \"confidenceScore\": $json.confidence,\n  \"eventStream\": [\n    {\n      \"actor\": \"CUSTOMER\",\n      \"eventMessage\": \"Claim submitted by customer\",\n      \"eventTimestamp\": $now\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "aura-create-case-node",
+      "name": "Create Backend Case",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -896,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const transcript = ($json.transcript || '').toLowerCase();\nconst event = ($json.event || '').toUpperCase();\nconst confidence = Number($json.confidence || 0);\nconst riskScore = Number($json.riskScore || 0);\nconst complaintCount = Number($json.complaintCount || 0);\nconst customerTier = ($json.customerTier || 'NORMAL').toUpperCase();\nconst claimAmount = Number($json.claimAmount || 0);\n\nlet nextAction = 'UNDER_REVIEW';\nlet workflowStatus = 'UNDER_REVIEW';\nlet activeAgent = 'Intake Agent';\nlet humanReviewRequired = false;\nlet escalationLevel = 'NONE';\nlet ethicalGuardrail = 'PASSED';\nlet autonomousAllowed = true;\nlet timelineMessage = 'Claim received and queued.';\n\nif (riskScore >= 75) {\n  autonomousAllowed = false;\n  humanReviewRequired = true;\n  ethicalGuardrail = 'HIGH_RISK_REQUIRES_HUMAN';\n}\n\nif (claimAmount > 5000) {\n  autonomousAllowed = false;\n  humanReviewRequired = true;\n  ethicalGuardrail = 'HIGH_VALUE_REFUND_REQUIRES_HUMAN';\n}\n\nif (complaintCount >= 3) {\n  humanReviewRequired = true;\n  escalationLevel = 'FRAUD_REVIEW';\n}\n\nif (confidence >= 0.95) {\n  humanReviewRequired = true;\n  escalationLevel = 'CRITICAL';\n}\n\nif (transcript.includes('damage') || transcript.includes('broken') || transcript.includes('screen') || event === 'VISION_AGENT_STARTED') {\n  nextAction = 'VISION_VERIFY';\n  workflowStatus = 'VERIFICATION_RUNNING';\n  activeAgent = 'Vision Agent';\n  timelineMessage = 'Vision verification initiated.';\n}\n\nif (event === 'POSSIBLE_DAMAGE_DETECTED' || riskScore >= 70 || confidence >= 0.9) {\n  nextAction = 'ESCALATE';\n  workflowStatus = 'ESCALATED';\n  activeAgent = 'Fraud Agent';\n  humanReviewRequired = true;\n  escalationLevel = 'HIGH';\n  timelineMessage = 'Possible anomaly detected. Human review required.';\n}\n\nif (transcript.includes('refund') || transcript.includes('replace') || event === 'RESOLUTION_REQUESTED') {\n  nextAction = 'RESOLUTION';\n  workflowStatus = 'RESOLUTION_RUNNING';\n  activeAgent = 'Resolution Agent';\n  timelineMessage = 'Resolution workflow started.';\n}\n\nif (event === 'MORE_EVIDENCE_REQUIRED') {\n  nextAction = 'REQUEST_EVIDENCE';\n  workflowStatus = 'WAITING_FOR_EVIDENCE';\n  activeAgent = 'Evidence Agent';\n  timelineMessage = 'Additional evidence requested.';\n}\n\nif (autonomousAllowed === false && nextAction === 'RESOLUTION') {\n  nextAction = 'ESCALATE';\n  workflowStatus = 'HUMAN_APPROVAL_REQUIRED';\n  activeAgent = 'Governance Agent';\n  timelineMessage = 'Human approval required due to governance policies.';\n}\n\nconst timelineEvent = {\n  eventType: event || 'UNKNOWN',\n  actor: activeAgent,\n  eventMessage: timelineMessage,\n  eventTimestamp: new Date().toISOString()\n};\n\nconst auditTrail = {\n  timestamp: new Date().toISOString(),\n  ticketId: $json.ticketId,\n  activeAgent,\n  workflowStatus,\n  escalationLevel,\n  ethicalGuardrail,\n  autonomousAllowed\n};\n\nreturn [{\n  json: {\n    ...$json,\n    nextAction,\n    workflowStatus,\n    activeAgent,\n    humanReviewRequired,\n    escalationLevel,\n    ethicalGuardrail,\n    autonomousAllowed,\n    timelineEvent,\n    auditTrail,\n    liveJourneyUpdate: {\n      currentStage: workflowStatus,\n      activeAgent,\n      updatedAt: new Date().toISOString()\n    },\n    journeyUpdate: timelineMessage\n  }\n}];"
+      },
+      "id": "c8390dab-d8f6-4a72-a154-cab50f77644b",
+      "name": "AI Coordination Agent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -784,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowStatus = $json.workflowStatus;\nconst activeAgent = $json.activeAgent;\nconst timeline = Array.isArray($json.timeline) ? $json.timeline : [];\n\nlet journeyStage = 'UNDER_REVIEW';\n\nif (workflowStatus === 'VERIFICATION_RUNNING') journeyStage = 'VISION_VERIFICATION';\nif (workflowStatus === 'ESCALATED') journeyStage = 'HUMAN_REVIEW';\nif (workflowStatus === 'RESOLUTION_RUNNING') journeyStage = 'RESOLUTION';\nif (workflowStatus === 'WAITING_FOR_EVIDENCE') journeyStage = 'AWAITING_CUSTOMER';\nif (workflowStatus === 'HUMAN_APPROVAL_REQUIRED') journeyStage = 'HUMAN_APPROVAL_REQUIRED';\n\nconst appendedTimelineEvent = {\n  timestamp: new Date().toISOString(),\n  actor: activeAgent,\n  stage: journeyStage,\n  message: $json.timelineEvent?.eventMessage || 'Journey updated'\n};\n\nreturn [{\n  json: {\n    ...$json,\n    journeyStage,\n    timeline: [...timeline, appendedTimelineEvent],\n    liveJourneyUpdate: {\n      currentStage: journeyStage,\n      activeAgent,\n      updatedAt: new Date().toISOString()\n    },\n    auditTrail: {\n      ...( $json.auditTrail || {} ),\n      journeyStage,\n      appendedTimelineEvent\n    }\n  }\n}];"
+      },
+      "id": "e4a16099-97a4-419c-9e00-2b12e48b04fb",
+      "name": "Journey State Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -560,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const ethicalGuardrail = $json.ethicalGuardrail || 'PASSED';\nconst autonomousAllowed = Boolean($json.autonomousAllowed);\nconst humanReviewRequired = Boolean($json.humanReviewRequired);\nconst riskScore = Number($json.riskScore || 0);\nconst claimAmount = Number($json.claimAmount || 0);\n\nlet nextAction = $json.nextAction;\nlet workflowStatus = $json.workflowStatus;\nlet governanceDecision = 'AUTONOMOUS_ALLOWED';\n\nif (riskScore >= 75 || claimAmount > 5000 || ethicalGuardrail !== 'PASSED') {\n  nextAction = 'ESCALATE';\n  workflowStatus = 'HUMAN_APPROVAL_REQUIRED';\n  governanceDecision = 'HUMAN_REVIEW_REQUIRED';\n}\n\nif (humanReviewRequired) {\n  nextAction = 'ESCALATE';\n  workflowStatus = 'ESCALATED';\n  governanceDecision = 'HUMAN_REVIEW_REQUIRED';\n}\n\nreturn [{\n  json: {\n    ...$json,\n    nextAction,\n    workflowStatus,\n    governanceDecision,\n    governanceAudit: {\n      timestamp: new Date().toISOString(),\n      ticketId: $json.ticketId,\n      ethicalGuardrail,\n      autonomousAllowed,\n      humanReviewRequired,\n      riskScore,\n      claimAmount,\n      governanceDecision\n    }\n  }\n}];"
+      },
+      "id": "8aff3cfd-ff1c-4389-be8d-3e8a753ab7ea",
+      "name": "Governance Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -336,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.nextAction}}",
+                    "operation": "equal",
+                    "value2": "VISION_VERIFY"
+                  }
+                ],
+                "combinator": "and",
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                }
+              }
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.nextAction}}",
+                    "operation": "equal",
+                    "value2": "ESCALATE"
+                  }
+                ],
+                "combinator": "and",
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                }
+              }
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.nextAction}}",
+                    "operation": "equal",
+                    "value2": "RESOLUTION"
+                  }
+                ],
+                "combinator": "and",
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                }
+              }
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.nextAction}}",
+                    "operation": "equal",
+                    "value2": "REQUEST_EVIDENCE"
+                  }
+                ],
+                "combinator": "and",
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                }
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0383117b-6304-407d-928d-99f6c36b8040",
+      "name": "Decision Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        -112,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "eventMessage",
+              "stringValue": "Vision verification initiated"
+            },
+            {
+              "name": "eventType",
+              "stringValue": "VISION_AGENT_STARTED"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e60798f6-e884-4648-8d59-1a09160d9681",
+      "name": "Vision Branch",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        112,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "eventType",
+              "stringValue": "ESCALATION_STARTED"
+            },
+            {
+              "name": "eventMessage",
+              "stringValue": "Human review required"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7c2b81d7-345b-4267-8347-f887d81c6b42",
+      "name": "Escalation Branch",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        112,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "eventType",
+              "stringValue": "RESOLUTION_STARTED"
+            },
+            {
+              "name": "eventMessage",
+              "stringValue": "Resolution workflow initiated"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "413f4b63-2683-4b18-8b7e-5fb10004d236",
+      "name": "Resolution Branch",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        112,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "eventType",
+              "stringValue": "MORE_EVIDENCE_REQUIRED"
+            },
+            {
+              "name": "eventMessage",
+              "stringValue": "additional evidence requested"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4c56f68d-98f8-4a0c-b93b-de897697d067",
+      "name": "Evidence Branch",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        112,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://localhost:5000/api/cases/{{$json.body.orderId}}/status",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "workflowStatus",
+              "value": "=={{$json.workflowStatus}}"
+            },
+            {
+              "name": "eventType",
+              "value": "=={{$json.eventType}}"
+            },
+            {
+              "name": "eventMessage",
+              "value": "=={{$json.eventMessage}}"
+            },
+            {
+              "name": "ConfidenceScore",
+              "value": "89"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6cb6d146-c9d8-461f-bfc5-5e03d40121af",
+      "name": "Backend Case Sync",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        336,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twilio.com/2010-04-01/Accounts/ACcfc1e4dcc7ad99d00db3405449fef0a2/Messages.json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twilioApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "From",
+              "value": "whatsapp:+14155238886"
+            },
+            {
+              "name": "To",
+              "value": "whatsapp:+919149293695"
+            },
+            {
+              "name": "Body",
+              "value": "=Hey This is Team AURA❤️ \nYour Updates:\n\nOrder ID: {{$json.orderId || 'UNKNOWN'}}\n\nWorkflow Status: {{$json.workflowStatus || 'UNDER_REVIEW'}}\n\nVerification Status:\n{{$json.agentResults?.verification?.verificationStatus || 'PENDING'}}\n\nAI Decision:\n{{$json.agentResults?.recommendation?.decision || 'UNDER REVIEW'}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "45cb7a1c-d822-4d73-bf79-3d38c6942393",
+      "name": "Twilio WhatsApp Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        560,
+        384
+      ],
+      "credentials": {
+        "twilioApi": {
+          "id": "be684rcokY0yar3V",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"reply\": \"नमस्ते। आपकी शिकायत सफलतापूर्वक दर्ज कर ली गई है।\"\n}",
+        "options": {}
+      },
+      "id": "38096f56-1341-4ece-ad76-2419eb0954b1",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        784,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "ae85721f-dd18-4758-b87f-157701cb8291",
+      "name": "Reject Invalid Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        560,
+        832
+      ]
+    }
+  ],
+  "connections": {
+    "Aura Live Webhook": {
+      "main": [
+        [
+          {
+            "node": "Enterprise Guardrail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enterprise Guardrail": {
+      "main": [
+        [
+          {
+            "node": "Create Backend Case",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Invalid Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+      
+    "Create Backend Case": {
+      "main": [
+        [
+          {
+            "node": "AI Coordination Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Coordination Agent": {
+      "main": [
+        [
+          {
+            "node": "Journey State Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Journey State Engine": {
+      "main": [
+        [
+          {
+            "node": "Governance Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Governance Engine": {
+      "main": [
+        [
+          {
+            "node": "Decision Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decision Router": {
+      "main": [
+        [
+          {
+            "node": "Vision Branch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Escalation Branch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resolution Branch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Evidence Branch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vision Branch": {
+      "main": [
+        [
+          {
+            "node": "Backend Case Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escalation Branch": {
+      "main": [
+        [
+          {
+            "node": "Backend Case Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resolution Branch": {
+      "main": [
+        [
+          {
+            "node": "Backend Case Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evidence Branch": {
+      "main": [
+        [
+          {
+            "node": "Backend Case Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Backend Case Sync": {
+      "main": [
+        [
+          {
+            "node": "Twilio WhatsApp Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twilio WhatsApp Notification": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reject Invalid Input": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "0636de399b15701c78775898a87cd013776899b45c34aa1199e723bf4b2617e5"
+  }
+}
