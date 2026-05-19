@@ -11,6 +11,10 @@ Frontend Deployment (only):
 https://kasparro-eight.vercel.app/
 
 ---
+# Video of Project Demo
+
+https://drive.google.com/file/d/1aX_T6mHGCgOW_1RMhhiRsY5JpGXTqXt3/view?usp=sharing
+---
 
 # Published n8n Workflow
 
