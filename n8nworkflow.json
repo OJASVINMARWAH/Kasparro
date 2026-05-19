@@ -7,13 +7,13 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "5df5e5d1-606c-419d-bb24-e370e2c4d589",
+      "id": "ecf06fab-e5c3-4de7-a442-dc0d4977e258",
       "name": "Aura Live Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -1232,
-        576
+        -848,
+        736
       ],
       "webhookId": "9b5b195c-e3a2-4e24-9fb0-06b41f06565a"
     },
@@ -40,52 +40,92 @@
         },
         "options": {}
       },
-      "id": "e01c100a-5255-443c-8bb3-a55e1ef8770c",
+      "id": "ce32db3c-a4c7-45be-b686-bf66821b9daa",
       "name": "Enterprise Guardrail",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1008,
-        576
+        -624,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5000/api/cases",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "orderId",
+              "value": "=={{$json.body.orderId}}"
+            },
+            {
+              "name": "customerName",
+              "value": "=={{$json.body.phone}}"
+            },
+            {
+              "name": "issue",
+              "value": "=={{$json.body.transcript}}"
+            },
+            {
+              "name": "workflowStatus",
+              "value": "RECEIVED"
+            },
+            {
+              "name": "confidenceScore",
+              "value": "=={{$json.body.confidence}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c0cd2cce-04fd-4f7c-9c36-5a50ade4e9da",
+      "name": "Create Backend Case",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -512,
+        544
       ]
     },
     {
       "parameters": {
         "jsCode": "const transcript = ($json.transcript || '').toLowerCase();\nconst event = ($json.event || '').toUpperCase();\nconst confidence = Number($json.confidence || 0);\nconst riskScore = Number($json.riskScore || 0);\nconst complaintCount = Number($json.complaintCount || 0);\nconst customerTier = ($json.customerTier || 'NORMAL').toUpperCase();\nconst claimAmount = Number($json.claimAmount || 0);\n\nlet nextAction = 'UNDER_REVIEW';\nlet workflowStatus = 'UNDER_REVIEW';\nlet activeAgent = 'Intake Agent';\nlet humanReviewRequired = false;\nlet escalationLevel = 'NONE';\nlet ethicalGuardrail = 'PASSED';\nlet autonomousAllowed = true;\nlet timelineMessage = 'Claim received and queued.';\n\nif (riskScore >= 75) {\n  autonomousAllowed = false;\n  humanReviewRequired = true;\n  ethicalGuardrail = 'HIGH_RISK_REQUIRES_HUMAN';\n}\n\nif (claimAmount > 5000) {\n  autonomousAllowed = false;\n  humanReviewRequired = true;\n  ethicalGuardrail = 'HIGH_VALUE_REFUND_REQUIRES_HUMAN';\n}\n\nif (complaintCount >= 3) {\n  humanReviewRequired = true;\n  escalationLevel = 'FRAUD_REVIEW';\n}\n\nif (confidence >= 0.95) {\n  humanReviewRequired = true;\n  escalationLevel = 'CRITICAL';\n}\n\nif (transcript.includes('damage') || transcript.includes('broken') || transcript.includes('screen') || event === 'VISION_AGENT_STARTED') {\n  nextAction = 'VISION_VERIFY';\n  workflowStatus = 'VERIFICATION_RUNNING';\n  activeAgent = 'Vision Agent';\n  timelineMessage = 'Vision verification initiated.';\n}\n\nif (event === 'POSSIBLE_DAMAGE_DETECTED' || riskScore >= 70 || confidence >= 0.9) {\n  nextAction = 'ESCALATE';\n  workflowStatus = 'ESCALATED';\n  activeAgent = 'Fraud Agent';\n  humanReviewRequired = true;\n  escalationLevel = 'HIGH';\n  timelineMessage = 'Possible anomaly detected. Human review required.';\n}\n\nif (transcript.includes('refund') || transcript.includes('replace') || event === 'RESOLUTION_REQUESTED') {\n  nextAction = 'RESOLUTION';\n  workflowStatus = 'RESOLUTION_RUNNING';\n  activeAgent = 'Resolution Agent';\n  timelineMessage = 'Resolution workflow started.';\n}\n\nif (event === 'MORE_EVIDENCE_REQUIRED') {\n  nextAction = 'REQUEST_EVIDENCE';\n  workflowStatus = 'WAITING_FOR_EVIDENCE';\n  activeAgent = 'Evidence Agent';\n  timelineMessage = 'Additional evidence requested.';\n}\n\nif (autonomousAllowed === false && nextAction === 'RESOLUTION') {\n  nextAction = 'ESCALATE';\n  workflowStatus = 'HUMAN_APPROVAL_REQUIRED';\n  activeAgent = 'Governance Agent';\n  timelineMessage = 'Human approval required due to governance policies.';\n}\n\nconst timelineEvent = {\n  eventType: event || 'UNKNOWN',\n  actor: activeAgent,\n  eventMessage: timelineMessage,\n  eventTimestamp: new Date().toISOString()\n};\n\nconst auditTrail = {\n  timestamp: new Date().toISOString(),\n  ticketId: $json.ticketId,\n  activeAgent,\n  workflowStatus,\n  escalationLevel,\n  ethicalGuardrail,\n  autonomousAllowed\n};\n\nreturn [{\n  json: {\n    ...$json,\n    nextAction,\n    workflowStatus,\n    activeAgent,\n    humanReviewRequired,\n    escalationLevel,\n    ethicalGuardrail,\n    autonomousAllowed,\n    timelineEvent,\n    auditTrail,\n    liveJourneyUpdate: {\n      currentStage: workflowStatus,\n      activeAgent,\n      updatedAt: new Date().toISOString()\n    },\n    journeyUpdate: timelineMessage\n  }\n}];"
       },
-      "id": "c8390dab-d8f6-4a72-a154-cab50f77644b",
+      "id": "372f721a-da90-462b-8e7a-f69ec49fd970",
       "name": "AI Coordination Agent",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -784,
-        384
+        -400,
+        544
       ]
     },
     {
       "parameters": {
         "jsCode": "const workflowStatus = $json.workflowStatus;\nconst activeAgent = $json.activeAgent;\nconst timeline = Array.isArray($json.timeline) ? $json.timeline : [];\n\nlet journeyStage = 'UNDER_REVIEW';\n\nif (workflowStatus === 'VERIFICATION_RUNNING') journeyStage = 'VISION_VERIFICATION';\nif (workflowStatus === 'ESCALATED') journeyStage = 'HUMAN_REVIEW';\nif (workflowStatus === 'RESOLUTION_RUNNING') journeyStage = 'RESOLUTION';\nif (workflowStatus === 'WAITING_FOR_EVIDENCE') journeyStage = 'AWAITING_CUSTOMER';\nif (workflowStatus === 'HUMAN_APPROVAL_REQUIRED') journeyStage = 'HUMAN_APPROVAL_REQUIRED';\n\nconst appendedTimelineEvent = {\n  timestamp: new Date().toISOString(),\n  actor: activeAgent,\n  stage: journeyStage,\n  message: $json.timelineEvent?.eventMessage || 'Journey updated'\n};\n\nreturn [{\n  json: {\n    ...$json,\n    journeyStage,\n    timeline: [...timeline, appendedTimelineEvent],\n    liveJourneyUpdate: {\n      currentStage: journeyStage,\n      activeAgent,\n      updatedAt: new Date().toISOString()\n    },\n    auditTrail: {\n      ...( $json.auditTrail || {} ),\n      journeyStage,\n      appendedTimelineEvent\n    }\n  }\n}];"
       },
-      "id": "e4a16099-97a4-419c-9e00-2b12e48b04fb",
+      "id": "8b8dda93-b0ce-4daa-b1ac-5fe40b6550ec",
       "name": "Journey State Engine",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -560,
-        384
+        -176,
+        544
       ]
     },
     {
       "parameters": {
         "jsCode": "const ethicalGuardrail = $json.ethicalGuardrail || 'PASSED';\nconst autonomousAllowed = Boolean($json.autonomousAllowed);\nconst humanReviewRequired = Boolean($json.humanReviewRequired);\nconst riskScore = Number($json.riskScore || 0);\nconst claimAmount = Number($json.claimAmount || 0);\n\nlet nextAction = $json.nextAction;\nlet workflowStatus = $json.workflowStatus;\nlet governanceDecision = 'AUTONOMOUS_ALLOWED';\n\nif (riskScore >= 75 || claimAmount > 5000 || ethicalGuardrail !== 'PASSED') {\n  nextAction = 'ESCALATE';\n  workflowStatus = 'HUMAN_APPROVAL_REQUIRED';\n  governanceDecision = 'HUMAN_REVIEW_REQUIRED';\n}\n\nif (humanReviewRequired) {\n  nextAction = 'ESCALATE';\n  workflowStatus = 'ESCALATED';\n  governanceDecision = 'HUMAN_REVIEW_REQUIRED';\n}\n\nreturn [{\n  json: {\n    ...$json,\n    nextAction,\n    workflowStatus,\n    governanceDecision,\n    governanceAudit: {\n      timestamp: new Date().toISOString(),\n      ticketId: $json.ticketId,\n      ethicalGuardrail,\n      autonomousAllowed,\n      humanReviewRequired,\n      riskScore,\n      claimAmount,\n      governanceDecision\n    }\n  }\n}];"
       },
-      "id": "8aff3cfd-ff1c-4389-be8d-3e8a753ab7ea",
+      "id": "66017e52-8163-454c-a2e8-195b01fdf0d7",
       "name": "Governance Engine",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -336,
-        384
+        48,
+        544
       ]
     },
     {
@@ -168,13 +208,13 @@
         },
         "options": {}
       },
-      "id": "0383117b-6304-407d-928d-99f6c36b8040",
+      "id": "db60de07-ffcf-4c59-b7a8-5f79ff2aa934",
       "name": "Decision Router",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3,
       "position": [
-        -112,
-        352
+        272,
+        512
       ]
     },
     {
@@ -193,13 +233,13 @@
         },
         "options": {}
       },
-      "id": "e60798f6-e884-4648-8d59-1a09160d9681",
+      "id": "8845a134-fb28-4d95-958d-10151642d2ab",
       "name": "Vision Branch",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        112,
-        96
+        496,
+        256
       ]
     },
     {
@@ -218,13 +258,13 @@
         },
         "options": {}
       },
-      "id": "7c2b81d7-345b-4267-8347-f887d81c6b42",
+      "id": "ce70337c-1778-4163-98bf-4040aba63eb1",
       "name": "Escalation Branch",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        112,
-        288
+        496,
+        448
       ]
     },
     {
@@ -243,13 +283,13 @@
         },
         "options": {}
       },
-      "id": "413f4b63-2683-4b18-8b7e-5fb10004d236",
+      "id": "962d5c9d-e5f8-4486-a2aa-3ff73a06b809",
       "name": "Resolution Branch",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        112,
-        480
+        496,
+        640
       ]
     },
     {
@@ -268,25 +308,25 @@
         },
         "options": {}
       },
-      "id": "4c56f68d-98f8-4a0c-b93b-de897697d067",
+      "id": "12bddbf6-b0d2-4232-baa3-b6ae6b578437",
       "name": "Evidence Branch",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        112,
-        672
+        496,
+        832
       ]
     },
     {
       "parameters": {
         "method": "PUT",
-        "url": "=http://localhost:5000/api/cases/{{$json.body.orderId}}/status",
+        "url": "=http://localhost:5000/api/cases/{{$json.data.orderId}}/status",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
             {
               "name": "workflowStatus",
-              "value": "=={{$json.workflowStatus}}"
+              "value": "={{$json.workflowStatus}}"
             },
             {
               "name": "eventType",
@@ -304,13 +344,13 @@
         },
         "options": {}
       },
-      "id": "6cb6d146-c9d8-461f-bfc5-5e03d40121af",
+      "id": "9b4dfe33-6b7e-4eae-9dae-dad70526741f",
       "name": "Backend Case Sync",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        336,
-        384
+        720,
+        544
       ]
     },
     {
@@ -339,13 +379,13 @@
         },
         "options": {}
       },
-      "id": "45cb7a1c-d822-4d73-bf79-3d38c6942393",
+      "id": "644430d1-a02d-442f-9574-02b274118629",
       "name": "Twilio WhatsApp Notification",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        560,
-        384
+        944,
+        544
       ],
       "credentials": {
         "twilioApi": {
@@ -360,26 +400,26 @@
         "responseBody": "={\n  \"success\": true,\n  \"reply\": \"नमस्ते। आपकी शिकायत सफलतापूर्वक दर्ज कर ली गई है।\"\n}",
         "options": {}
       },
-      "id": "38096f56-1341-4ece-ad76-2419eb0954b1",
+      "id": "e7e5a4a7-4c9c-4465-8120-8dfb8d4ed423",
       "name": "Respond",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        784,
-        576
+        1168,
+        736
       ]
     },
     {
       "parameters": {
         "options": {}
       },
-      "id": "ae85721f-dd18-4758-b87f-157701cb8291",
+      "id": "cdf4d739-87e7-4ec5-b7f6-4c3993c47fc2",
       "name": "Reject Invalid Input",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        560,
-        832
+        944,
+        992
       ]
     }
   ],
@@ -399,7 +439,7 @@
       "main": [
         [
           {
-            "node": "AI Coordination Agent",
+            "node": "Create Backend Case",
             "type": "main",
             "index": 0
           }
@@ -407,6 +447,17 @@
         [
           {
             "node": "Reject Invalid Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Backend Case": {
+      "main": [
+        [
+          {
+            "node": "AI Coordination Agent",
             "type": "main",
             "index": 0
           }
