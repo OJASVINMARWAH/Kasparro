@@ -6,7 +6,7 @@ An AI-powered customer support orchestration platform designed to streamline mer
 
 # Live Demo
 
-Frontend Deployment:
+Frontend Deployment (only):
 
 https://kasparro-eight.vercel.app/
 
